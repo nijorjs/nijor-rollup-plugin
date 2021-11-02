@@ -1,0 +1,27 @@
+{
+  "name": "@nijor/nijor-rollup-plugin",
+  "version": "1.4.7",
+  "description": "The rollup plugin for Nijor.",
+  "main": "compiler/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nijorjs/nijor-rollup-plugin.git"
+  },
+  "keywords": [
+    "Nijor"
+  ],
+  "author": "Deb Axom",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nijorjs/nijor-rollup-plugin/issues"
+  },
+  "homepage": "https://github.com/nijorjs/nijor-rollup-plugin#readme",
+  "dependencies": {
+    "@rollup/pluginutils": "^4.1.0",
+    "chalk": "^4.1.1",
+    "jsdom": "^16.5.3"
+  }
+}
