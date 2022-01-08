@@ -3,4 +3,4 @@ git add -A
 git add -A
 git commit -m "$1"
 git push
-echo "Publishion successfull !"
+echo "Published successfully !"

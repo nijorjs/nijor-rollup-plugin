@@ -41,9 +41,9 @@ async function WriteStyleSheet(doc,scope,options){
         fs.appendFileSync(options.styleSheet,style);
     } catch (error) {}
     try {
-        let CSS = 'body.dark-mode[n-scope]{'+doc.window.document.querySelector('n-style[dark="true"]').innerHTML+'}';
+        let CSS = doc.window.document.querySelector('n-style[dark="true"]').innerHTML;
         let style = await ReturnStyles(CSS,scope,options);
-        style = `${style}}`;
+        style = options.Style(`body.dark-mode{ ${style} }`);
         fs.appendFileSync(options.styleSheet,style);
     } catch (error) {}
 }

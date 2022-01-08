@@ -1,6 +1,6 @@
 {
   "name": "@nijor/nijor-rollup-plugin",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "description": "The rollup plugin for Nijor.",
   "main": "compiler/index.js",
   "scripts": {
