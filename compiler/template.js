@@ -240,6 +240,6 @@ module.exports = function(doc,scope,ComponentScope,options){
     // Compiling on:{event} ends here
     
     template = VirtualDocument.window.document.body.innerHTML;
-    template = template.replace(/\s+/g,' ').trim().replace(/>\s+</g, "><");
+    // template = template.replace(/\s+/g,' ').trim().replace(/>\s+</g, "><");
     return {template,Postscripts,Prescripts};
 }

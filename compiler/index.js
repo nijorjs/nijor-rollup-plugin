@@ -48,6 +48,7 @@ function ReturnModule(doc){
     */
     let Mod = [];
     doc.window.document.querySelectorAll("[n:imported]").forEach(child=>{
+      if(child.hasAttribute('lazy')) return;
         let componentVar = '$'+child.tagName.toLowerCase();
         let from = child.getAttribute('n:imported')+'.nijor';
         Mod.push(`import ${componentVar} from "${from}";`);
@@ -57,6 +58,40 @@ function ReturnModule(doc){
 function ReturnRunModule(doc,ComponentScope){
     let Mod = [];
     doc.window.document.querySelectorAll("[n:imported]").forEach(child=>{
+      if(child.hasAttribute('lazy')) return;
+      
+      let componentVar = '$'+child.tagName.toLowerCase();
+      let OriginalComponentName = child.tagName.toLowerCase();
+      let componentName = OriginalComponentName+ComponentScope;
+      /* 
+      get the ComponentScope
+      Change the name of the im
+      Call the run function on the imported components.
+      $header.init('header'+ComponentScope);
+      $header.run();
+      */
+      Mod.push(`
+              ${componentVar}.init('${componentName}');
+              await ${componentVar}.run();
+            `);
+    });
+    return Mod.join('');
+}
+function ReturnDynamicModule(doc){
+  let Mod = [];
+  doc.window.document.querySelectorAll("[n:imported]").forEach(child=>{
+      if(!(child.hasAttribute('lazy'))) return;
+      let componentVar = '$'+child.tagName.toLowerCase();
+      let from = child.getAttribute('n:imported');
+      Mod.push(`const {default : ${componentVar}} = await import("${from}");`);
+  });
+  return Mod.join('');
+}
+function ReturnDynamicRunModule(doc,ComponentScope){
+  let Mod = [];
+  doc.window.document.querySelectorAll("[n:imported]").forEach(child=>{
+    if(!(child.hasAttribute('lazy'))) return;
+
     let componentVar = '$'+child.tagName.toLowerCase();
     let OriginalComponentName = child.tagName.toLowerCase();
     let componentName = OriginalComponentName+ComponentScope;
@@ -71,12 +106,13 @@ function ReturnRunModule(doc,ComponentScope){
             ${componentVar}.init('${componentName}');
             await ${componentVar}.run();
           `);
-    });
-    return Mod.join('');
+  });
+  return Mod.join('');
 }
 function NijorCompiler(options) {
   let opts = { include: '**/*.nijor' };
   const filter = createFilter(opts.include, opts.exclude);
+  let { rootdir } = options;
   return {
   name: "nijorCompile",
 
@@ -84,7 +120,6 @@ function NijorCompiler(options) {
       let componentName = id.replace('/','\\');
       componentName = id.split('\\');
       componentName = componentName.reverse();
-
       {
         let msg; 
         try{
@@ -131,26 +166,28 @@ function NijorCompiler(options) {
         const importStatementsPre =  ReturnScripts(VirtualDocument,'pre').ImportStatements;
         const importStatementsPost =  ReturnScripts(VirtualDocument,'post').ImportStatements;
         const midScript = ReturnScripts(VirtualDocument,'mid').script;
-        const NijorComponentClass = ' __Nijor_ComponentClass'+GenerateID(3,9);
         let mod = ReturnModule(VirtualDocument);
         let runmod = ReturnRunModule(VirtualDocument,ComponentScope);
-            return {
-                code: `
-                  import ${NijorComponentClass} from 'nijor/components';
-                  ${mod}
-                  ${importStatementsPre}
-                  ${importStatementsPost}
-                  ${Prescripts}
-                  export default new ${NijorComponentClass}(async function(${specsAttr}){
-                      ${midScript}
-                      return(\`${template}\`);
-                  },async function()
-                  {${runmod}
-                  ${Postscripts}
-                });
-                `,
-                map: { mappings: "" }
-            };
+        let dymod = ReturnDynamicModule(VirtualDocument,rootdir);
+        let dyrunmod = ReturnDynamicRunModule(VirtualDocument,ComponentScope,rootdir);
+        return {
+            code: `
+              ${mod}
+              ${importStatementsPre}
+              ${importStatementsPost}
+              ${Prescripts}
+              export default new window.nijor.component(async function(${specsAttr}){
+                  ${midScript}
+                  return(\`${template}\`);
+              },async function(){
+                ${dymod}
+                ${runmod}
+                ${dyrunmod}
+                ${Postscripts}
+            });
+            `,
+            map: { mappings: "" }
+        };
       }
     }
   };
