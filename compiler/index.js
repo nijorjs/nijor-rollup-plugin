@@ -6,12 +6,6 @@ const chalk = require('chalk');
 const GenerateID = require('./uniqueId.js');
 const TemplateLoader = require('./template.js');
 
-const extensionColorMap = {
-  '.nijor':'#40e249',
-  '.js':'#fffb0e',
-  'default':'#ff73f8'
-};
-
 function returnScriptsContent(doc,execute){
     try {
         let script = doc.window.document.querySelector('script[execute="'+execute+'"]').innerHTML;
@@ -120,13 +114,9 @@ function NijorCompiler(options) {
       let componentName = id.replace('/','\\');
       componentName = id.split('\\');
       componentName = componentName.reverse();
+      
       {
-        let msg; 
-        try{
-          msg = chalk.rgb(0, 195, 255)(`Nijor: `)+chalk.hex(extensionColorMap[path.extname(id)])(`Compiling ${componentName[0]} .`);
-        }catch{
-          msg = chalk.rgb(0, 195, 255)(`Nijor: `)+chalk.hex(extensionColorMap['default'])(`Compiling ${componentName[0]} .`);
-        }
+        let msg = chalk.rgb(0, 195, 255)(`Nijor: `)+chalk.hex('#ffff00')(`Compiling ${componentName[0]}`);
         console.log(msg);
       }
       
