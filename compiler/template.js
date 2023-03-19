@@ -101,7 +101,7 @@ module.exports = function(doc,scope,ComponentScope,options,specsAttr){
             element.setAttribute('data-n:asyncLoad',eventName);
         }
         
-        element.setAttribute('on:'+eventName,fnName+'(this,$data)');
+        element.setAttribute('on:'+eventName,fnName+`(this,${specsAttr})`);
         
         element.querySelectorAll('*').forEach(child=>{
             let elementName = child.tagName.toLowerCase();
@@ -118,7 +118,7 @@ module.exports = function(doc,scope,ComponentScope,options,specsAttr){
 
         });
 
-        let fn = `async function ${fnName}(_this,$data){
+        let fn = `async function ${fnName}(_this,${specsAttr}){
             ${condition}
             _this.innerHTML = \`${innerContent}\`;
             ${runScript}
