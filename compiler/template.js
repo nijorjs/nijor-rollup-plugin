@@ -101,7 +101,7 @@ module.exports = function(doc,scope,ComponentScope,options,specsAttr){
             element.setAttribute('data-n:asyncLoad',eventName);
         }
         
-        element.setAttribute('on:'+eventName,fnName+`(this,$\{${specsAttr}})`);
+        element.setAttribute('on:'+eventName,fnName+`(this,$data)`);
         
         element.querySelectorAll('*').forEach(child=>{
             let elementName = child.tagName.toLowerCase();
