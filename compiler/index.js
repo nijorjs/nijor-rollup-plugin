@@ -152,7 +152,7 @@ function NijorCompiler(options) {
 
         const scope = GenerateID(6,20);
         const ComponentScope = GenerateID(2,5).toLowerCase();
-        const {template,Postscripts,Prescripts} = TemplateLoader(VirtualDocument,scope,ComponentScope,options);
+        const {template,Postscripts,Prescripts} = TemplateLoader(VirtualDocument,scope,ComponentScope,options,specsAttr);
         const importStatementsPre =  ReturnScripts(VirtualDocument,'pre').ImportStatements;
         const importStatementsPost =  ReturnScripts(VirtualDocument,'post').ImportStatements;
         const midScript = ReturnScripts(VirtualDocument,'mid').script;
@@ -169,7 +169,7 @@ function NijorCompiler(options) {
               export default new window.nijor.component(async function(${specsAttr}){
                   ${midScript}
                   return(\`${template}\`);
-              },async function(){
+              },async function(${specsAttr}){
                 ${dymod}
                 ${runmod}
                 ${dyrunmod}

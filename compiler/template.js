@@ -30,7 +30,7 @@ function isNijorComponent(element) {
     return false;
 }
 
-module.exports = function(doc,scope,ComponentScope,options){
+module.exports = function(doc,scope,ComponentScope,options,specsAttr){
 
     WriteStyleSheet(doc,scope,options); // write the css file
     
@@ -101,7 +101,7 @@ module.exports = function(doc,scope,ComponentScope,options){
             element.setAttribute('data-n:asyncLoad',eventName);
         }
         
-        element.setAttribute('on:'+eventName,fnName+'(this)');
+        element.setAttribute('on:'+eventName,fnName+'(this,$data)');
         
         element.querySelectorAll('*').forEach(child=>{
             let elementName = child.tagName.toLowerCase();
@@ -118,14 +118,14 @@ module.exports = function(doc,scope,ComponentScope,options){
 
         });
 
-        let fn = `async function ${fnName}(_this){
+        let fn = `async function ${fnName}(_this,$data){
             ${condition}
             _this.innerHTML = \`${innerContent}\`;
             ${runScript}
         }`;
 
         Prescripts+=fn;
-        Postscripts+=`window.nijor.emitEvent('${eventName}',null);`;
+        Postscripts+=`window.nijor.emitEvent('${eventName}',${specsAttr});`;
         element.innerHTML = '';
     });
     // Compiling n:asyncLoad ends here
