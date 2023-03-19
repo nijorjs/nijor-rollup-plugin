@@ -44,7 +44,7 @@ function ReturnModule(doc){
     doc.window.document.querySelectorAll("[n:imported]").forEach(child=>{
       if(child.hasAttribute('lazy')) return;
         let componentVar = '$'+child.tagName.toLowerCase();
-        let from = child.getAttribute('n:imported')+'.nijor';
+        let from = child.getAttribute('n:imported');
         Mod.push(`import ${componentVar} from "${from}";`);
     });
     return Mod.join('');
