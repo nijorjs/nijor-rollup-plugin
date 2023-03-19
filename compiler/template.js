@@ -118,7 +118,7 @@ module.exports = function(doc,scope,ComponentScope,options,specsAttr){
 
         });
 
-        let fn = `async function ${fnName}(_this,${specsAttr}){
+        let fn = `async function ${fnName}(_this,$\{${specsAttr}}){
             ${condition}
             _this.innerHTML = \`${innerContent}\`;
             ${runScript}
