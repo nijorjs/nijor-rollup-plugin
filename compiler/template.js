@@ -54,15 +54,15 @@ module.exports = function(doc,scope,ComponentScope,options,specsAttr){
     });
     // Changing the name of the components ends here
 
-    // Compiling {{view}} starts here
+    // Compiling {{ReactiveVar}} starts here
     try {
         template.match(/{{(.*)}}/g).forEach(child=>{
-            let view_value = child.replace('{{','').replace('}}','').replace(/ /g,'');
-            let newValue = `<nijorview view="${view_value}" style="font:inherit;background-color:transparent;"></nijorview>`;
+            let varName = child.replace('{{','').replace('}}','').replace(/ /g,'');
+            let newValue = `<nirev var="${varName}" style="all:inhreit;background-color:transparent;">{window.nijor.reactiveVars["${varName}"] || ''}</nirev>`;
             template = template.replace(child,newValue);
         });
     } catch (error) {}
-    // Compiling {{view}} ends here
+    // Compiling {{ReactiveVar}} ends here
     
     template = template.replace(/`/g,'\\`');
     template = template.replace(/{/g,'${');
@@ -86,6 +86,14 @@ module.exports = function(doc,scope,ComponentScope,options,specsAttr){
     VirtualDocument.window.document.body.innerHTML = tmpVar.VirtualDocument;
     Prescripts = tmpVar.Prescripts;
     // Compiling on:{event} ends here
+
+    // Compiling n:bind starts here
+    VirtualDocument.window.document.body.querySelectorAll('[n:bind]').forEach(child=>{
+        let bindVar = child.getAttribute('n:bind').replace('@','').replace(':','');
+        child.removeAttribute('n:bind');
+        child.setAttribute('oninput',`window.nijorfunc.nbind('${bindVar}',this.value)`);
+    });
+    // Compiling n:bind ends here
 
     // Compiling n:asyncLoad starts here
     VirtualDocument.window.document.body.querySelectorAll('[n:asyncLoad]').forEach(element=>{
