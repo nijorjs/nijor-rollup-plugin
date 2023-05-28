@@ -30,7 +30,7 @@ function isNijorComponent(element) {
     return false;
 }
 
-module.exports = function(doc,scope,ComponentScope,options,specsAttr){
+module.exports = function(doc,scope,ComponentScope,options,specsAttr,filename){
 
     WriteStyleSheet(doc,scope,options); // write the css file
     
@@ -68,6 +68,18 @@ module.exports = function(doc,scope,ComponentScope,options,specsAttr){
     template = template.replace(/{/g,'${');
     template = template.replace(/\\\${/g,'\{');
     const VirtualDocument = new JSDOM(template);
+
+    // Compiling n:slot starts here
+    VirtualDocument.window.document.body.querySelectorAll('[n:slot]').forEach(child=>{
+        let route;
+        try{
+            route = filename.replace(/\\/g,'/').split('/pages')[1].replace(/\//g,'').replace('.nijor','');
+        }catch{
+            route="/";
+        }
+        child.id = `routes-slot-${route}`;
+    });
+    // Compiling n:slot ends here
 
     // Adding the n-scope attribute starts here
     VirtualDocument.window.document.body.querySelectorAll('*').forEach((child) => {

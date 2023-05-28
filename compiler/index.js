@@ -121,7 +121,6 @@ function NijorCompiler(options) {
       }
       
       if (filter(id)) {
-
         let newCode = code.replace(new RegExp('<style','g'),'<n-style');
         newCode = newCode.replace(new RegExp('</style','g'),'</n-style');
 
@@ -152,7 +151,7 @@ function NijorCompiler(options) {
 
         const scope = GenerateID(6,20);
         const ComponentScope = GenerateID(2,5).toLowerCase();
-        const {template,Postscripts,Prescripts} = TemplateLoader(VirtualDocument,scope,ComponentScope,options,specsAttr);
+        const {template,Postscripts,Prescripts} = TemplateLoader(VirtualDocument,scope,ComponentScope,options,specsAttr,id);
         const importStatementsPre =  ReturnScripts(VirtualDocument,'pre').ImportStatements;
         const importStatementsPost =  ReturnScripts(VirtualDocument,'post').ImportStatements;
         const midScript = ReturnScripts(VirtualDocument,'mid').script;
