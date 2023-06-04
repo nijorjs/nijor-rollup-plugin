@@ -71,13 +71,11 @@ module.exports = function(doc,scope,ComponentScope,options,specsAttr,filename){
 
     // Compiling n:slot starts here
     VirtualDocument.window.document.body.querySelectorAll('[n:slot]').forEach(child=>{
-        let route;
-        try{
-            route = filename.replace(/\\/g,'/').split('/pages')[1].replace(/\//g,'').replace('.nijor','');
-        }catch{
-            route="/";
-        }
+        
+        let route = getRouteFromFilePath(filename);
         child.id = `routes-slot-${route}`;
+        child.removeAttribute('n:slot');
+
     });
     // Compiling n:slot ends here
 
@@ -262,4 +260,26 @@ module.exports = function(doc,scope,ComponentScope,options,specsAttr,filename){
     template = VirtualDocument.window.document.body.innerHTML;
     // template = template.replace(/\s+/g,' ').trim().replace(/>\s+</g, "><");
     return {template,Postscripts,Prescripts};
+}
+
+function getRouteFromFilePath(filepath){
+    filepath = filepath.replace(/\\/g,'/');
+    if(filepath.indexOf('src/pages/')==-1) return '/';
+    let route = '/'+filepath.split('src/pages/')[1].replace('.nijor','');
+    if(route.endsWith('/') && route!="/") route = route.substring(0, route.length-1);
+    const fragments = route.split('/');
+    const lastFragment = fragments[fragments.length-1];
+    let url = '';
+    let parentURL = ''; 
+
+    if(fragments.length > 1 && lastFragment==="index") fragments.pop();
+    url = fragments.join('/') || '/';
+
+    global.Slots.forEach(item=>{
+        if(url.indexOf(item)>-1){
+            parentURL = item;
+        }
+    });
+
+    return parentURL;
 }
